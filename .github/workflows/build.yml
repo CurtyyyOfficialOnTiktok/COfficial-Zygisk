@@ -1,0 +1,37 @@
+name: Build Zygisk Module
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r27d
+          add-to-path: false
+
+      - name: Download zygisk.hpp
+        run: |
+          curl -sO https://raw.githubusercontent.com/topjohnwu/Magisk/master/native/src/core/zygisk/zygisk.hpp
+
+      - name: Compile arm64-v8a.so
+        run: |
+          NDK_BIN="${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          "$NDK_BIN/aarch64-linux-android29-clang++" -shared -fPIC -O2 -std=c++17 zygisk_spoof.cpp -o arm64-v8a.so -llog
+
+      - name: Upload arm64-v8a.so
+        uses: actions/upload-artifact@v4
+        with:
+          name: cofficial-zygisk-so
+          path: arm64-v8a.so
+          
