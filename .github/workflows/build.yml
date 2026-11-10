@@ -22,7 +22,7 @@ jobs:
 
       - name: Download zygisk.hpp
         run: |
-          curl -sO https://raw.githubusercontent.com/topjohnwu/Magisk/master/native/src/core/zygisk/zygisk.hpp
+          curl -sO https://raw.githubusercontent.com/topjohnwu/zygisk-module-sample/master/module/jni/zygisk.hpp
 
       - name: Compile arm64-v8a.so
         run: |
